@@ -11,11 +11,11 @@ credits = pd.read_csv('Credits ETL.csv', sep=',')
 cast = pd.read_csv('Cast.csv', sep=',')
 director = pd.read_csv('Director.csv', sep=',')
 
-app = FastAPI
+app = FastAPI()
 
-@app.get("/")
-def titulo():
-    return {'Bienvenidos': 'al modelo de recomendación de películas'}
+#@app.get("/")
+#def titulo():
+#    return {'Bienvenidos': 'al modelo de recomendación de películas'}
 
 @app.get("/cantidad_filmaciones_mes/{Mes}")
 def cantidad_filmaciones_mes(Mes):
