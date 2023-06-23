@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 import pandas as pd
 import numpy as np
-import json
-import ast
-from pandas.io.json import json_normalize
-import calendar
+#import json
+#import ast
+#from pandas.io.json import json_normalize
+#import calendar
 
 movies = pd.read_csv('Movies ETL.csv', sep=',') 
 credits = pd.read_csv('Credits ETL.csv', sep=',')
@@ -13,7 +13,9 @@ director = pd.read_csv('Director.csv', sep=',')
 
 app = FastAPI
 
-
+@app.get("/")
+def titulo():
+    return {'Bienvenidos': 'al modelo de recomendación de películas'}
 
 @app.get("/cantidad_filmaciones_mes/{Mes}")
 def cantidad_filmaciones_mes(Mes):
