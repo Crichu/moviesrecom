@@ -5,7 +5,6 @@ import json
 import ast
 from pandas.io.json import json_normalize
 import calendar
-import unix
 
 movies = pd.read_csv('Movies ETL.csv', sep=',') 
 credits = pd.read_csv('Credits ETL.csv', sep=',')
