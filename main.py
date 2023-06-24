@@ -5,14 +5,14 @@ import numpy as np
 #import ast
 #from pandas.io.json import json_normalize
 #import calendar
-import locale
-locale.setlocale(locale.LC_ALL, 'es_ES.utf8')
+#import locale
+#locale.setlocale(locale.LC_ALL, 'es_ES.utf8')
 
 
 
 
 movies = pd.read_csv('Movies ETL.csv', sep=',') 
-credits = pd.read_csv('Credits ETL.csv', sep=',')
+#credits = pd.read_csv('Credits ETL.csv', sep=',')
 cast = pd.read_csv('Cast.csv', sep=',')
 director = pd.read_csv('Director.csv', sep=',')
 
@@ -26,20 +26,38 @@ def root():
 def cantidad_filmaciones_mes(Mes):
 #Se ingresa el mes y la funcion retorna la cantidad de peliculas que se estrenaron ese mes historicamente
 
-    # Convertir el mes a minúsculas y capitalizar la primera letra
-    Mes = Mes.lower().capitalize()
+    # Convertir el mes a minúsculas
+    Mes = Mes.lower()
+
+    # Creo un diccionario con los meses para convertir el str ingresado por el usuario a int.
+    meses = {
+        "enero": 1,
+        "febrero": 2,
+        "marzo": 3,
+        "abril": 4,
+        "mayo": 5,
+        "junio": 6,
+        "julio": 7,
+        "agosto": 8,
+        "septiembre": 9,
+        "octubre": 10,
+        "noviembre": 11,
+        "diciembre": 12
+    }
+
+    mesNum = meses[Mes]
 
     # Convertir la columna 'release_date' a tipo de dato datetime
     movies['release_date'] = pd.to_datetime(movies['release_date'])
 
     # Filtrar las películas que coinciden con el mes consultado. Para que reconozca los meses en Español tengo que usar el parámetro 'es_ES.utf8'.
-    #filmaciones_mes = movies[movies['release_date'].dt.month == Mes].release_date.count()
-    filmaciones_mes = movies[movies['release_date'].dt.month_name('es_ES.utf8') == Mes]
+    filmaciones_mes = movies[movies['release_date'].dt.month == mesNum].release_date.count()
+    #filmaciones_mes = movies[movies['release_date'].dt.month_name('es_ES.utf8') == Mes]
 
 
     # Obtener la cantidad de filmaciones en el mes
-    #cantidad = int(filmaciones_mes)
-    cantidad = len(filmaciones_mes)
+    cantidad = int(filmaciones_mes)
+    #cantidad = len(filmaciones_mes)
 
 
     return {'Mes': Mes, 'Cantidad de películas': cantidad}
@@ -51,16 +69,34 @@ def cantidad_filmaciones_dia( Dia ):
 #Se ingresa el dia y la funcion retorna la cantidad de peliculas que se estrebaron ese dia historicamente
    
     # Convertir el mes a minúsculas y capitalizar la primera letra
-    Dia = Dia.lower().capitalize()
+    Dia = Dia.lower()
+
+    # Creo un diccionario con los días para convertir el str ingresado por el usuario a int.
+    meses = {
+        "lunes": 1,
+        "martes": 2,
+        "miercoles": 3,
+        "jueves": 4,
+        "viernes": 5,
+        "sabado": 6,
+        "domingo": 7,
+        }
+
+    diaNum = meses[Dia]
+
 
     # Convertir la columna 'release_date' a tipo de dato datetime
     movies['release_date'] = pd.to_datetime(movies['release_date'])
 
     # Filtrar las películas que coinciden con el mes consultado. Para que reconozca los meses en Español tengo que usar el parámetro 'es_ES.utf8'.
-    filmaciones_dia = movies[movies['release_date'].dt.day_name('es_ES.utf8') == Dia]
+    #filmaciones_dia = movies[movies['release_date'].dt.day_name('es_ES.utf8') == Dia]
+    filmaciones_dia = movies[movies['release_date'].dt.day == diaNum].release_date.count()
+
     
     # Obtener la cantidad de filmaciones en el mes
-    cantidad = len(filmaciones_dia)
+    #cantidad = len(filmaciones_dia)
+    cantidad = int(filmaciones_dia)
+
 
     return {'Día': Dia, 'Cantidad de películas': cantidad}
     #f'{cantidad} cantidad de películas fueron estrenadas en el mes de {Dia}'
