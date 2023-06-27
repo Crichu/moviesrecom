@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 import pandas as pd
 import numpy as np
+import seaborn as sns
+from sklearn.feature_extraction.text import TfidfVectorizer
+#from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.neighbors import NearestNeighbors
+
 #import json
 #import ast
 #from pandas.io.json import json_normalize
@@ -55,6 +60,7 @@ def cantidad_filmaciones_mes(Mes):
     #filmaciones_mes = movies[movies['release_date'].dt.month_name('es_ES.utf8') == Mes]
 
 
+
     # Obtener la cantidad de filmaciones en el mes
     cantidad = int(filmaciones_mes)
     #cantidad = len(filmaciones_mes)
@@ -72,17 +78,17 @@ def cantidad_filmaciones_dia( Dia ):
     Dia = Dia.lower()
 
     # Creo un diccionario con los días para convertir el str ingresado por el usuario a int.
-    meses = {
-        "lunes": 1,
-        "martes": 2,
-        "miercoles": 3,
-        "jueves": 4,
-        "viernes": 5,
-        "sabado": 6,
-        "domingo": 7,
-        }
+    dias = {
+        'lunes': 'Monday',
+        'martes': 'Tuesday',
+        'miércoles': 'Wednesday',
+        'jueves': 'Thursday',
+        'viernes': 'Friday',
+        'sábado': 'Saturday',
+        'domingo': 'Sunday'
+    }
 
-    diaNum = meses[Dia]
+    diaNum = dias[Dia]
 
 
     # Convertir la columna 'release_date' a tipo de dato datetime
@@ -90,8 +96,10 @@ def cantidad_filmaciones_dia( Dia ):
 
     # Filtrar las películas que coinciden con el mes consultado. Para que reconozca los meses en Español tengo que usar el parámetro 'es_ES.utf8'.
     #filmaciones_dia = movies[movies['release_date'].dt.day_name('es_ES.utf8') == Dia]
-    filmaciones_dia = movies[movies['release_date'].dt.day == diaNum].release_date.count()
+    #filmaciones_dia = movies[movies['release_date'].dt.day_name == diaNum].release_date.count()
 
+    movies['dia'] = movies['release_date'].apply(lambda x: x.day_name())
+    filmaciones_dia = movies[movies['dia'] == diaNum].dia.count()
     
     # Obtener la cantidad de filmaciones en el mes
     #cantidad = len(filmaciones_dia)
@@ -223,7 +231,7 @@ def get_director( nombre_director: str ):
     #return get_director
 
     return {"El director": nombre_director, 'ha conseguido un retorno total de': dir_total_return, 
-            "A continuación se muestra un detalle de todas las películas que digrigió:": get_director}
+            "A continuación se muestra un detalle de todas las películas que digrigió:": get_director[['title', 'release_date', 'return', 'budget', 'revenue']]}
 
 
 
@@ -231,10 +239,56 @@ def get_director( nombre_director: str ):
 
 
 #############################################################################################
+#### MACHINE LEARNING
+
+### Paso 1: Preparación de los datos**
+
+# Relleno los valores nulos en 'overview' con una cadena vacía
+movies['overview'] = movies['overview'].fillna('')
+
+#Voy a reducir el tamaño de la matriz por limitaciones en la capacidad de procesamiento de mi equipo y por limitaciones en Render a la hora de generar la API.
+#Ordenaré el Dataframe de acuerdo a papularidad, de mayor a menor. Y tomaré lo primeros N registros.
+#El orden por popularidad lo hago porque, al ser las más conocidas y vistas, es muy probable que hayan escuchado hablar de ellas y, tal vez, las tengas en una lista mental... No viene mal un recordatorio!!!
+
+movies_ordenado = movies.sort_values(by= 'popularity', ascending=False)
+N = 5000
+movies_muestra = movies_ordenado[['title','overview', 'popularity']].head(N)
+
+#reseteo el index
+movies_muestra = movies_muestra.reset_index(drop=True)
 
 
-# ML
-#@app.get('/recomendacion/{titulo}')
-#def recomendacion(titulo:str):
+### Paso 2: Vectorización del texto
+tfidf = TfidfVectorizer(stop_words='english')
+overview_matrix = tfidf.fit_transform(movies_muestra['overview'])
+
+
+### Paso 3: Construcción del modelo 1: KNN
+k = 5
+model = NearestNeighbors(metric='cosine', algorithm='brute')
+model.fit(overview_matrix)
+
+
+
+### Paso 4: Función de Recomendación
+
+@app.get('/recomendacion/{titulo}')
+def recomendacion(titulo:str):
     '''Ingresas un nombre de pelicula y te recomienda las similares en una lista'''
-#    return {'lista recomendada': respuesta}
+
+    #Obtener el índice de la película ingresada dentro del DF movies_muestra. Esto es para encontrar la posición correspondiente dentro de la matriz de similitud.
+    movie_index = movies_muestra[movies_muestra['title'] == titulo].index[0]
+
+    #Encuentro los vecinos más cercanos gracias al modelo entrenado (model)
+    distancias, indices = model.kneighbors(overview_matrix[movie_index], n_neighbors=k+1)
+
+    #Ordenar el listado de vecinos de acuerdo a las distancias.
+    similar_movies = sorted(list(zip(indices.squeeze().tolist(), distancias.squeeze().tolist())), key=lambda x: x[1])[1:]
+
+    #Obtener sólo el índice de las películas.
+    similar_movie_indices = [i[0] for i in similar_movies]
+
+    #Con el índice anterior, busco los títulos de las películas recomendadas en el DF reducido y lo devuelvo como lista.
+    recommended_movies = movies_muestra.iloc[similar_movie_indices]['title'].tolist()
+    
+    return {'lista recomendada': recommended_movies}
