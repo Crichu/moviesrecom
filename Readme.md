@@ -82,7 +82,7 @@ A continuación se listan las 6 funciones generadas:
 
     Además, la cantidad de películas en las que ha participado y el promedio de retorno.
     
-+ ** def get_director( nombre_director )**: Se ingresa el nombre de un director. Se devuelve el éxito del mismo medido a través del retorno. 
++ **def get_director( nombre_director )**: Se ingresa el nombre de un director. Se devuelve el éxito del mismo medido a través del retorno. 
     Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma.
 
 Más detalles: 'Desarrollo de funciones.ipynb'
@@ -122,15 +122,64 @@ Es importante relevar esto a la hora de construir un sistema de recomendación b
 
 Los resultados fueron los siguientes:
 
+*Títulos*
+
+Las palabras que más aparecen en los títulos son 'Love' y 'Man'.
+También 'Life', 'Girl', 'Day' y 'Nigth' son bastante comunes.
+
 <p align=center><img src=https://github.com/Crichu/moviesrecom/blob/main/Nube%20de%20palabras%20Titulo.png><p>
 
 
+*Overview*
+
+'life' y 'find' son las palbras más comunes en los overview. Además, 'love', 'live' y 'family' también son muy populares.
+
+<p align=center><img src=https://github.com/Crichu/moviesrecom/blob/main/Nube%20de%20palabras%20Overview.png><p>
+
+***Conclusión***
+
+Estas plabra se relacionan en cierto sentido con las palabras encotradas en el gráfico de nubes de títulos. Con lo cual, podemos concluir que, de manera general, los títulos por sí mismos son representativos de los temas que tratan las películas.
+
++ **Análisis de franquicias**
+
+Me interesa conocer el puntaje de popularidad asignado por la TDMB de cada franquicia. Podría ser útil a la hora de recomendar películas de la misma saga.
+
+<p align=center><img src=https://github.com/Crichu/moviesrecom/blob/main/Franquicias%20populares.png><p>
+
+***Conclusión***
+
+El top5 de colecciones más populares (ordenados por sum) son:
+1) Despicable Me Collection	
+2) James Bond Collection		
+3) Wonder Woman Collection		
+4) Pirates of the Caribbean Collection		
+5) Planet of the Apes (Reboot) Collection
+
++ **Popularidad: Analisis de distribución y detección de outliers**
+
+La popularidad de cada película podría ser utilizada para ordenar las recomendaciones.
+
+En concecuencia, sería útil analizar los datos numéricos que contiene esta columna y detectar ouliers.
+
+Una distribución de frecuencia de valores de popularidad arroja que hay valores muy alejados del resto de los datos.
+
+<p align=center><img src=https://github.com/Crichu/moviesrecom/blob/main/Histograma%20popularidad.png><p>
+
+Entremos más en detalle: *¿Cuáles son las películas que tienen popularidades tan altas?*
+
+<p align=center><img src=https://github.com/Crichu/moviesrecom/blob/main/listado%20de%20peliculas%20populares.png><p>
+
+***Conclusión***
+
+Vemos que los títulos con mayor popularidad, valores que llamabamos outliers, son películas muy conocidas que rompieron muchos record en cines y streaming. Por lo tanto, pueden ser considerados como valores atípicos pero válidos. Y, por ende, no se quitarán del dataset.
+
+*Notese que durante el EDA se hizo mucho hincapié en la popularidad.*
+
+*Esto se debe a que, al tratarse de un sistema de recomendación, se prioriza la popularidad por sobre otras variables porque es más probable que el usuario haya escuchado hablar de las películas con mayor ranking de popularidad y sería más factible que, al aparecer en un listado de recomendaciones las consuma.*
+
+***Sistema de recomendación***</h4>
 
 
-
-
-
-***Modelo***</h4>
 
 ## **Links de interés**
 ***Dataset***</h4>
