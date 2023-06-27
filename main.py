@@ -172,6 +172,17 @@ def votos_titulo( titulo_de_la_filmacion: str ):
         #f'La película no cuenta con al menos 2000 valoraciones'
 
 
+
+# En el caso de la función de get_actor, hago ciertas tareas de prepación de dataset fuera de la función para optimizar recursos (el DF de cast tiene para de 800 mil filas)
+#Tengo que unir Movies ETL.csv y Cast.csv a través de id
+df_cast = pd.merge(movies, cast, on='id')
+
+#Convierto los valores de la columna cast_name a minúscula.
+df_cast['cast_name'] =  df_cast['cast_name'].str.lower()
+
+#Creo un DF con los datos que necesito
+get_actor = pd.DataFrame(data= df_cast, columns=['cast_name', 'id', 'return'])
+
 @app.get("/get_actor/{nombre_actor}")
 def get_actor( nombre_actor: str):
 #Se ingresa el nombre de un actor debiendo devolver el éxito del mismo medido a través de la suma de los retornos obtenidos en todas sus películas. 
@@ -179,15 +190,7 @@ def get_actor( nombre_actor: str):
 
     #convierto la variable a minúsculas para independizarme de la forma en que el usuario escribe el nombre
     nombre_actor = nombre_actor.lower()
-
-    #Tengo que unir Movies ETL.csv y Cast.csv a través de id
-    df_cast = pd.merge(movies, cast, on='id')
-
-    #Convierto los valores de la columna cast_name a minúscula.
-    df_cast['cast_name'] =  df_cast['cast_name'].str.lower()
-
-    #Creo un DF con los datos que necesito
-    get_actor = pd.DataFrame(data= df_cast, columns=['cast_name', 'id', 'return'])
+#########
 
     #Filtro el DF por el nombre que ingresó el usario
     get_actor = get_actor[get_actor['cast_name'] == nombre_actor]
