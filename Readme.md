@@ -108,9 +108,27 @@ Entre otras cosas, fue necesario volver al codigo base en 'main.py' con el objet
 
 También fue necesario cambiar manualmente la versión de algunas librerías ya que en render no se cuenta con las últimas versiones.
 
-**`Desarrollo del sistema de recomendación`**</h3>
+### **`Desarrollo del sistema de recomendación`**</h3>
 
 ***EDA***</h4>
+
+Con el objetivo de conocer aún más los datos y detectar patrones y outliers que pudieran interferir en el modelado del sistema de recomendación, se realizó un Analisis Eploratorio de los Datos (EDA).
+
++ **Nube de palabras**
+
+Se comparan las palabras más frecuentes en los títulos y las más frecuentes en los overview. Lo cual puede dar una idea de cuán representativos son lo overview respecto a los títulos.
+
+Es importante relevar esto a la hora de construir un sistema de recomendación basado en contenido.
+
+Los resultados fueron los siguientes:
+
+<p align=center><img src=https://github.com/Crichu/moviesrecom/blob/main/Nube%20de%20palabras%20Titulo.png><p>
+
+
+
+
+
+
 
 ***Modelo***</h4>
 
