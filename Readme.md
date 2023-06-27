@@ -108,6 +108,8 @@ Entre otras cosas, fue necesario volver al codigo base en 'main.py' con el objet
 
 También fue necesario cambiar manualmente la versión de algunas librerías ya que en render no se cuenta con las últimas versiones.
 
+Más detalles: 'main.py'
+
 ### **`Desarrollo del sistema de recomendación`**</h3>
 
 ***EDA***</h4>
@@ -140,9 +142,10 @@ También 'Life', 'Girl', 'Day' y 'Nigth' son bastante comunes.
 
 Estas plabra se relacionan en cierto sentido con las palabras encotradas en el gráfico de nubes de títulos. Con lo cual, podemos concluir que, de manera general, los títulos por sí mismos son representativos de los temas que tratan las películas.
 
+
 + **Análisis de franquicias**
 
-Me interesa conocer el puntaje de popularidad asignado por la TDMB de cada franquicia. Podría ser útil a la hora de recomendar películas de la misma saga.
+Interesa conocer el puntaje de popularidad asignado por la TDMB de cada franquicia. Podría ser útil a la hora de recomendar películas de la misma saga.
 
 <p align=center><img src=https://github.com/Crichu/moviesrecom/blob/main/Franquicias%20populares.png><p>
 
@@ -154,6 +157,7 @@ El top5 de colecciones más populares (ordenados por sum) son:
 3) Wonder Woman Collection		
 4) Pirates of the Caribbean Collection		
 5) Planet of the Apes (Reboot) Collection
+
 
 + **Popularidad: Analisis de distribución y detección de outliers**
 
@@ -173,12 +177,47 @@ Entremos más en detalle: *¿Cuáles son las películas que tienen popularidades
 
 Vemos que los títulos con mayor popularidad, valores que llamabamos outliers, son películas muy conocidas que rompieron muchos record en cines y streaming. Por lo tanto, pueden ser considerados como valores atípicos pero válidos. Y, por ende, no se quitarán del dataset.
 
+
 *Notese que durante el EDA se hizo mucho hincapié en la popularidad.*
 
-*Esto se debe a que, al tratarse de un sistema de recomendación, se prioriza la popularidad por sobre otras variables porque es más probable que el usuario haya escuchado hablar de las películas con mayor ranking de popularidad y sería más factible que, al aparecer en un listado de recomendaciones las consuma.*
+*Esto se debe a que, al tratarse de un sistema de recomendación, se prioriza la popularidad por sobre otras variables porque es más probable que el usuario haya escuchado hablar de las películas con mayor ranking de popularidad y sería más factible que, al aparecer en un listado de recomendaciones éste las consuma.*
+
+Más detalles: 'EDA.ipynb'
+
 
 ***Sistema de recomendación***</h4>
 
+La propuesta es crear un modelo de recomendación de películas basado en contenido.
+
+El usuario deberá ingresar el título de una película. Se devuelven 5 películas similares.
+
+Basado en las conclusiones del EDA, se construye un modelo basado en contenido, teniendo en cuenta el overview de las películas.
+
+También se priorizarán las películas más populares por lo explicado más arriba.
+
+Para ello se hará uso de un modelo de KNN y se calificarán los ítems de acuerdo a similitud de cosenos.
+
++ **Paso 1: Preparar los datos**
+
+Durante esta etapa se trabajó con 'Movies ETL.csv' como dataset de origen.
+
+Debido a las limitaciones de recursos de Render.com, que fueron ya mencionadas anteriormente, surje la necesidad de reducir el dataset.
+
+Con este objetivo, primero se ordena el dataframe de acuerdo a la popularidad ('popularity') y se extraen los primeros 5.000 registros.
+
++ **Paso 2: Vectorización**
+
+Se crea una matriz numérica a partir de la columna 'overview'. Esta matriz contiene información numérica que representa la importancia relativa de cada palabra en cada resumen de película. Esto permite cuantificar la relevancia de las palabras en cada registro en relación con el conjunto completo de datos.
+
++ **Paso 3: Construncción del modelo KNN**
+
+Aquí simplemente se instancia el modelo y se entrena.
+
+Se utiliza el módulo NearestNeighbors de la librería sklearn.
+
++ **Paso 4: Crear la función de recomendación**
+
+Ingresado el título de una película, el algoritmo trabaja con el dataset reducido y la matriz numérica definida en el paso 2, creando una lista de 5 elementos (películas afines) ordenadas de mayor a menor en función a score que el modelo determina.
 
 
 ## **Links de interés**
