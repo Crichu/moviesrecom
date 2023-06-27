@@ -32,15 +32,15 @@ En este archivo está la información detallada de cada película (año de lanza
 
 En primer lugar se analizó el archivo movies_dataset.csv. Luego de un breve analisis exploratorio, se procede a realizar las transformaciones que incluyen:
 
-    * Eliminar columnas sin utilidad.
-    * Reemplazar o eliminar valores nulos y NA.
-    * Convertir las columnas de fechas a formato fecha.
-    * Agregar columnas con cálculos. En esta caso, la columna 'return' (retorno) que se obtiene de dividir 'revenue' (beneficios) y 'budget' (presupuesto).
-    * Desanidar los campos que contienen diccionarios o listas como valores.
++ Eliminar columnas sin utilidad.
++ Reemplazar o eliminar valores nulos y NA.
++ Convertir las columnas de fechas a formato fecha.
++ Agregar columnas con cálculos. En esta caso, la columna 'return' (retorno) que se obtiene de dividir 'revenue' (beneficios) y 'budget' (presupuesto).
++ Desanidar los campos que contienen diccionarios o listas como valores.
 
-El Dataframe resultante se exportó como 'Movies ETL.csv'.
+El Dataframe resultante se exportó como ['Movies ETL.csv'](https://github.com/Crichu/moviesrecom/blob/main/Movies%20ETL.csv).
 
-Más detalles: 'Movies ETL.ipynb'
+Más detalles: ['Movies ETL.ipynb'](https://github.com/Crichu/moviesrecom/blob/main/Movies%20ETL.ipynb)
 
 ***ETL de credits***</h4>
 
@@ -48,17 +48,16 @@ En este archivo hay información sobre actores, pesonajes y staff (incluyuendo d
 
 Al igual que en el caso, luego de un breve analisis exploratorio, se hicieron las siguientes transformaciones:
 
-    * Elimar los duplicados de la columna id.
-    * Desanidar campos que contienen diccionario o listas como valores.
++ Elimar los duplicados de la columna id.
++ Desanidar campos que contienen diccionario o listas como valores.
 
 A partir del Dataframe resultante, se generaron dos Dataframes que luego fueron exportados como cvs:
 
-1) 'Director.csv' que contiene información sobre los directores de cada película
+1) ['Director.csv'](https://github.com/Crichu/moviesrecom/blob/main/Director.csv) que contiene información sobre los directores de cada película
 
-2) 'Cast.csv' que contiene información sobre los actores de cada película.
+2) ['Cast.csv'](https://github.com/Crichu/moviesrecom/blob/main/Cast.csv) que contiene información sobre los actores de cada película.
 
-Más detalles: Credits ETL.ipynb
-
+Más detalles: ['Credits ETL.ipynb'](https://github.com/Crichu/moviesrecom/blob/main/Credits%20ETL.ipynb)
 
 ### **`Desarrollo de API`**</h3>
 
@@ -85,16 +84,16 @@ A continuación se listan las 6 funciones generadas:
 + **def get_director( nombre_director )**: Se ingresa el nombre de un director. Se devuelve el éxito del mismo medido a través del retorno. 
     Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma.
 
-Más detalles: 'Desarrollo de funciones.ipynb'
+Más detalles: ['Desarrollo de funciones.ipynb'](https://github.com/Crichu/moviesrecom/blob/main/Desarrollo%20de%20Funciones.ipynb)
 
 
 ***Desarrollo de API***</h4>
 
-Las funciones creadas se copiaron en el archivo 'main.py' en donde se desarrolla la API utilizando la librería FastAPI.
+Las funciones creadas se copiaron en el archivo ['main.py'](https://github.com/Crichu/moviesrecom/blob/main/main.py) en donde se desarrolla la API utilizando la librería FastAPI.
 
 En este archivo, se genera un ruta raíz (@get.app'/') y los decoradores para cada una de las 6 funciones.
 
-Esto permite crear una url para consulta.
+Esto permite crear una url de consulta para cada una de las  funciones.
 
 En este punto, antes de continuar con el deploy, se probó la API generada de manera local utilizando uvicorn.
 
@@ -108,7 +107,7 @@ Entre otras cosas, fue necesario volver al codigo base en 'main.py' con el objet
 
 También fue necesario cambiar manualmente la versión de algunas librerías ya que en render no se cuenta con las últimas versiones.
 
-Más detalles: 'main.py'
+Más detalles: ['main.py'](https://github.com/Crichu/moviesrecom/blob/main/main.py)
 
 ### **`Desarrollo del sistema de recomendación`**</h3>
 
@@ -140,7 +139,7 @@ También 'Life', 'Girl', 'Day' y 'Nigth' son bastante comunes.
 
 ***Conclusión***
 
-Estas plabra se relacionan en cierto sentido con las palabras encotradas en el gráfico de nubes de títulos. Con lo cual, podemos concluir que, de manera general, los títulos por sí mismos son representativos de los temas que tratan las películas.
+Estas plabras se relacionan en cierto sentido con las palabras encotradas en el gráfico de nubes de títulos. Con lo cual, podemos concluir que, de manera general, los títulos por sí mismos son representativos de los temas que tratan las películas.
 
 
 + **Análisis de franquicias**
@@ -182,7 +181,7 @@ Vemos que los títulos con mayor popularidad, valores que llamabamos outliers, s
 
 *Esto se debe a que, al tratarse de un sistema de recomendación, se prioriza la popularidad por sobre otras variables porque es más probable que el usuario haya escuchado hablar de las películas con mayor ranking de popularidad y sería más factible que, al aparecer en un listado de recomendaciones éste las consuma.*
 
-Más detalles: 'EDA.ipynb'
+Más detalles: ['EDA.ipynb'](https://github.com/Crichu/moviesrecom/blob/main/EDA.ipynb)
 
 
 ***Sistema de recomendación***</h4>
@@ -191,15 +190,15 @@ La propuesta es crear un modelo de recomendación de películas basado en conten
 
 El usuario deberá ingresar el título de una película. Se devuelven 5 películas similares.
 
-Basado en las conclusiones del EDA, se construye un modelo basado en contenido, teniendo en cuenta el overview de las películas.
+En línea con las conclusiones del EDA, se construye un modelo basado en contenido, teniendo en cuenta el overview de las películas.
 
-También se priorizarán las películas más populares por lo explicado más arriba.
+También se priorizan las películas más populares por lo explicado más arriba.
 
-Para ello se hará uso de un modelo de KNN y se calificarán los ítems de acuerdo a similitud de cosenos.
+Para ello se hace uso de un modelo de KNN y se calificarán los ítems de acuerdo a similitud de cosenos.
 
 + **Paso 1: Preparar los datos**
 
-Durante esta etapa se trabajó con 'Movies ETL.csv' como dataset de origen.
+Durante esta etapa se trabajó con ['Movies ETL.csv'](https://github.com/Crichu/moviesrecom/blob/main/Movies%20ETL.csv) como dataset de origen.
 
 Debido a las limitaciones de recursos de Render.com, que fueron ya mencionadas anteriormente, surje la necesidad de reducir el dataset.
 
@@ -221,10 +220,8 @@ Ingresado el título de una película, el algoritmo trabaja con el dataset reduc
 
 
 ## **Links de interés**
-***Dataset***</h4>
+[**Dataset**](https://drive.google.com/drive/folders/1nvSjC2JWUH48o3pb8xlKofi8SNHuNWeu)
 
-***Repositorio Github***</h4>
+[**API**](https://movies-master-app.onrender.com/docs)
 
-***API***</h4>
-
-***Video demostración***</h4>
+[**Video demostración**]()
