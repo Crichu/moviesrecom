@@ -1,24 +1,15 @@
-# Como regla general, personalmente importo todas las librerías y luego comento las que no utilizo
 
 from fastapi import FastAPI
 import pandas as pd
 import numpy as np
-#import seaborn as sns
 from sklearn.feature_extraction.text import TfidfVectorizer
-#from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.neighbors import NearestNeighbors
-#import json
-#import ast
-#from pandas.io.json import json_normalize
-#import calendar
-#import locale
-#locale.setlocale(locale.LC_ALL, 'es_ES.utf8')
+
 
 
 
 
 movies = pd.read_csv('Movies ETL.csv', sep=',') 
-#credits = pd.read_csv('Credits ETL.csv', sep=',')
 cast = pd.read_csv('Cast.csv', sep=',')
 director = pd.read_csv('Director.csv', sep=',')
 
@@ -58,7 +49,6 @@ def cantidad_filmaciones_mes(Mes):
 
     # Filtrar las películas que coinciden con el mes consultado. Para que reconozca los meses en Español tengo que usar el parámetro 'es_ES.utf8'.
     filmaciones_mes = movies[movies['release_date'].dt.month == mesNum].release_date.count()
-    #filmaciones_mes = movies[movies['release_date'].dt.month_name('es_ES.utf8') == Mes]
 
 
 
@@ -68,7 +58,6 @@ def cantidad_filmaciones_mes(Mes):
 
 
     return {'Mes': Mes, 'Cantidad de películas': cantidad}
-    #f'{cantidad} cantidad de películas fueron estrenadas en el mes de {Mes}'
 
 
 @app.get('/cantidad_filmaciones_dia{Dia}')
@@ -96,8 +85,6 @@ def cantidad_filmaciones_dia( Dia ):
     movies['release_date'] = pd.to_datetime(movies['release_date'])
 
     # Filtrar las películas que coinciden con el mes consultado. Para que reconozca los meses en Español tengo que usar el parámetro 'es_ES.utf8'.
-    #filmaciones_dia = movies[movies['release_date'].dt.day_name('es_ES.utf8') == Dia]
-    #filmaciones_dia = movies[movies['release_date'].dt.day_name == diaNum].release_date.count()
 
     movies['dia'] = movies['release_date'].apply(lambda x: x.day_name())
     filmaciones_dia = movies[movies['dia'] == diaNum].dia.count()
@@ -108,7 +95,6 @@ def cantidad_filmaciones_dia( Dia ):
 
 
     return {'Día': Dia, 'Cantidad de películas': cantidad}
-    #f'{cantidad} cantidad de películas fueron estrenadas en el mes de {Dia}'
 
 
 @app.get("/score_titulo/{titulo_de_la_filmacion}")
@@ -134,7 +120,6 @@ def score_titulo(titulo_de_la_filmacion: str):
     score = str(pelicula['popularity'].iloc[0])
 
     return {'La película': titulo, 'fue estrenada en el año': anio_estreno, 'con un score/popularidad de': score}
-    #return f"La película {titulo} fue estrenada en el año {anio_estreno} con un score/popularidad de {score}."
 
 
 @app.get("/votos_titulo/{titulo_de_la_filmacion}")
@@ -164,12 +149,10 @@ def votos_titulo( titulo_de_la_filmacion: str ):
         promedio = pelicula['vote_average'].values[0]
 
         return {'La película': titulo, 'cuenta con una cantidad total de votos de': votos, 'con un promedio de': promedio}
-        #f"La película {titulo} cuenta con un total de {votos} valoraciones, con un promedio de {promedio}"
 
     else:
         #Mensaje si vote_count < 2000
         return {'La película': 'no cuenta con al menos 2000 valoraciones'} 
-        #f'La película no cuenta con al menos 2000 valoraciones'
 
 
 
@@ -198,7 +181,6 @@ def get_actor( nombre_actor: str):
     avg_return = str(get_actor['return'].mean()) #Se incluye también el retorno promedioen función de las películas en las que actuó.
 
     return {'El actor': nombre_actor, 'ha participado de': count, 'filmaciones. Ha conseguido un retorno de': total_return, 'con un promedio por película de': avg_return} 
-    #f'El actor {nombre_actor} ha participado de {count} cantidad de filmaciones, el mismo ha conseguido un retorno de {total_return} con un promedio de {avg_return} por filmación'
 
 
 
@@ -227,11 +209,8 @@ def get_director( nombre_director: str ):
     #Sumo el total_return
     dir_total_return = get_director['return'].sum()
 
-    #Agrego al df la columna con el total_return
-    #get_director['director_total_return'] = get_director['return'].sum()
 
     #Devuelvo el return total y una tabla con el detalle de cada película
-    #return get_director
 
     return {"El director": nombre_director, 'ha conseguido un retorno total de': dir_total_return, 
             "A continuación se muestra un detalle de todas las películas que digrigió:": get_director[['title', 'release_date', 'return', 'budget', 'revenue']]}
